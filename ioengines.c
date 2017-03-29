@@ -474,7 +474,8 @@ int td_io_open_file(struct thread_data *td, struct fio_file *f)
 	    (f->filetype == FIO_TYPE_BD || f->filetype == FIO_TYPE_FILE)) {
 		off_t stream = td->o.fadvise_stream;
 
-		if (posix_fadvise(f->fd, stream, f->io_size, POSIX_FADV_STREAMID) < 0) {
+		if (posix_fadvise(f->fd, stream, STREAM_F_INODE | STREAM_F_FILE,
+				POSIX_FADV_STREAM_ASSIGN) < 0) {
 			td_verror(td, errno, "fadvise streamid");
 			goto err;
 		}
